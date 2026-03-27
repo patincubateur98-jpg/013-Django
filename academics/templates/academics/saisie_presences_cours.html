@@ -5,6 +5,7 @@
     <title>Saisie des présences par cours</title>
 </head>
 <body>
+    {% load academics_extras %}
     {% include 'academics/_top_nav.html' %}
     <h1>Saisie des présences par cours</h1>
 
@@ -28,7 +29,7 @@
         <select name="cours_id" required>
             <option value="">-- Choisir --</option>
             {% for c in cours_liste %}
-                <option value="{{ c.id }}" {% if cours and cours.id == c.id %}selected{% endif %}>{{ c.code }}</option>
+                <option value="{{ c.id }}" {% if cours and cours.id == c.id %}selected{% endif %}>{{ c.code|code_cours }}</option>
             {% endfor %}
         </select>
 
@@ -41,7 +42,7 @@
             {% for combo in combinaisons %}
                 <li>
                     R{{ combo.classe__numero }} {{ combo.classe__nom|default:"" }}
-                    — {{ combo.cours__code }}
+                    — {{ combo.cours__code|code_cours }}
                     — {{ combo.nombre_etudiants }} étudiant(s)
                 </li>
             {% endfor %}
@@ -51,7 +52,7 @@
     {% endif %}
 
     {% if classe and cours %}
-        <h2>{{ classe }} — Cours {{ cours.code }}</h2>
+        <h2>{{ classe }} — Cours {{ cours.code|code_cours }}</h2>
         <p>Colonnes attendues : {{ nombre_colonnes }} (P / A / AE)</p>
         <p>Dates proposées automatiquement selon la séquence 001 → 101 → 201 (intervalle 2 semaines), modifiables en cas d'empêchement.</p>
         <form method="post" action="/presences/saisie/">

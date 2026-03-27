@@ -5,6 +5,7 @@
     <title>Liste des tuteurs</title>
 </head>
 <body>
+    {% load academics_extras %}
     {% include 'academics/_top_nav.html' %}
     <h1>Liste des tuteurs</h1>
 
@@ -22,7 +23,7 @@
                     {% else %}
                         -
                     {% endif %}
-                    — Cours: {{ t.cours_code|default:"-" }}
+                        — Cours: {{ t.cours_code|code_cours }}
                     — Étudiants suivis: {{ t.nombre_etudiants }}
                 </li>
             {% endfor %}

@@ -23,8 +23,19 @@ class Cours(models.Model):
 		db_table = 'cours'
 		ordering = ['code']
 
+	def code_affiche(self):
+		code_brut = (self.code or '').strip()
+		if code_brut.upper().startswith('PCNC'):
+			chiffres = ''.join(ch for ch in code_brut if ch.isdigit())
+			if len(chiffres) >= 3:
+				return chiffres[-3:]
+			parts = code_brut.split()
+			if len(parts) > 1:
+				return parts[-1]
+		return code_brut
+
 	def __str__(self):
-		return self.code
+		return self.code_affiche()
 
 
 class Tuteur(models.Model):

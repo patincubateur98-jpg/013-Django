@@ -5,10 +5,11 @@
     <title>Détail cours</title>
 </head>
 <body>
+    {% load academics_extras %}
     {% include 'academics/_top_nav.html' %}
-    <h1>Détail du cours {{ cours.code }}</h1>
+    <h1>Détail du cours {{ cours.code|code_cours }}</h1>
 
-    <p><strong>Code :</strong> {{ cours.code }}</p>
+    <p><strong>Code :</strong> {{ cours.code|code_cours }}</p>
     <p><strong>Nom :</strong> {{ cours.nom|default:"-" }}</p>
 
     <h2>Étudiants inscrits</h2>

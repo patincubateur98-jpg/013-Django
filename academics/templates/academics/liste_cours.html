@@ -5,6 +5,7 @@
     <title>Liste des cours</title>
 </head>
 <body>
+    {% load academics_extras %}
     {% include 'academics/_top_nav.html' %}
     <h1>Liste des cours</h1>
 
@@ -12,7 +13,7 @@
         <ul>
             {% for c in cours %}
                 <li>
-                    <a href="/cours/{{ c.id }}/">{{ c.code }}</a>
+                    <a href="/cours/{{ c.id }}/">{{ c.code|code_cours }}</a>
                     {% if c.nom %}
                         — {{ c.nom }}
                     {% endif %}

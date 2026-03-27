@@ -1,0 +1,123 @@
+MEMO GIT - DEBUTANT (projet Django)
+Date: 27/03/2026
+
+Important:
+- Tu travailles actuellement sur la branche: test-presences-page
+- La branche test n'existe pas dans ce repo
+- Branche principale: main
+
+==================================================
+1) VERIFIER OU TU ES
+==================================================
+
+# Affiche la branche active et les fichiers modifies
+git status -sb
+
+# Affiche toutes les branches locales + distantes
+git branch --all
+
+==================================================
+2) SAUVEGARDER TON TRAVAIL (COMMIT)
+==================================================
+
+# 1) Ajouter tous les fichiers modifies au commit
+git add -A
+
+# 2) Creer le commit (message clair)
+git commit -m "Mise a jour: presences et vues"
+
+# Si git commit echoue:
+# - Soit il n'y a rien a commit
+# - Soit ton identite Git n'est pas configuree
+# Dans ce cas configure une fois:
+# git config --global user.name "Ton Nom"
+# git config --global user.email "ton.email@example.com"
+
+==================================================
+3) ENVOYER LA BRANCHE SUR LE SERVEUR (PUSH)
+==================================================
+
+# Premiere fois sur cette branche (recommande)
+git push -u origin test-presences-page
+
+# Les fois suivantes
+git push
+
+==================================================
+4) CREER UNE PULL REQUEST (PR)
+==================================================
+
+# Sur GitHub/GitLab:
+# Base/Target: main
+# Compare/Source: test-presences-page
+# Puis valider les checks (tests, CI) et cliquer Merge
+
+==================================================
+5) RECUPERER MAIN APRES MERGE
+==================================================
+
+# Revenir sur main
+git checkout main
+
+# Recuperer la version a jour de main
+git pull origin main
+
+==================================================
+6) SUPPRIMER LA BRANCHE APRES MERGE (OPTIONNEL)
+==================================================
+
+# Supprimer la branche locale
+git branch -d test-presences-page
+
+# Supprimer la branche distante
+git push origin --delete test-presences-page
+
+==================================================
+7) CAS FREQUENTS ET SOLUTIONS RAPIDES
+==================================================
+
+[Erreur] pathspec 'test' did not match any file(s) known to git
+Cause: la branche test n'existe pas.
+Solution: utiliser le vrai nom de branche, ici test-presences-page.
+
+[Erreur] git commit retourne code 1
+Causes possibles:
+- Rien a commit
+- Identite Git manquante
+- Conflits non resolus
+Commandes de diagnostic:
+git status
+
+[Erreur] push refuse (non-fast-forward)
+Solution classique:
+git pull --rebase origin test-presences-page
+git push
+
+==================================================
+8) ROUTINE SIMPLE (A UTILISER A CHAQUE FOIS)
+==================================================
+
+# 1) Voir l'etat
+git status -sb
+
+# 2) Ajouter les changements
+git add -A
+
+# 3) Commit
+git commit -m "Message clair"
+
+# 4) Push
+git push
+
+==================================================
+9) SI TU VEUX RENOMMER LA BRANCHE EN test
+==================================================
+
+# Renommer la branche locale courante
+git branch -m test
+
+# Pousser la branche renommee
+git push -u origin test
+
+# (Optionnel) Supprimer l'ancienne branche distante si elle existe
+git push origin --delete test-presences-page

@@ -2,22 +2,86 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>Liste des présences</title>
+    <title>Calendrier des Cours</title>
 </head>
 <body>
     {% include 'academics/_top_nav.html' %}
-    <h1>Liste des présences</h1>
+    <h1>Calendrier des Cours</h1>
 
-    {% if presences %}
-        <ul>
-            {% for p in presences %}
-                <li>
-                    <a href="/presences/{{ p.id }}/">{{ p.date }}</a>
-                    — Classe: <a href="/classes/{{ p.classe.id }}/">{{ p.classe }}</a>
-                    — Cours: <a href="/cours/{{ p.cours.id }}/">{{ p.cours }}</a>
-                </li>
-            {% endfor %}
-        </ul>
+    {% if rows %}
+        <h2>Calendriers à partir d'aujourd'hui</h2>
+        {% if dates_courantes %}
+            <div style="overflow-x: auto;">
+                <table border="1" cellpadding="6" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Classe | Cours</th>
+                            {% for d in dates_courantes %}
+                                <th>{{ d|date:"d/m/y" }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                            <tr>
+                                <td>
+                                    Classe <a href="/classes/{{ row.classe.id }}/">{{ row.classe }}</a>
+                                    | Cours : <a href="/cours/{{ row.cours.id }}/">{{ row.cours }}</a>
+                                </td>
+                                {% for p in row.cells_courantes %}
+                                    <td>
+                                        {% if p %}
+                                            <a href="/presences/{{ p.id }}/">Détail</a>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>Aucun calendrier à partir d'aujourd'hui.</p>
+        {% endif %}
+
+        {% if dates_passees %}
+            <details>
+                <summary>Afficher l'historique (dates antérieures)</summary>
+                <div style="overflow-x: auto; margin-top: 8px;">
+                    <table border="1" cellpadding="6" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Classe | Cours</th>
+                                {% for d in dates_passees %}
+                                    <th>{{ d|date:"d/m/y" }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                                <tr>
+                                    <td>
+                                        Classe <a href="/classes/{{ row.classe.id }}/">{{ row.classe }}</a>
+                                        | Cours : <a href="/cours/{{ row.cours.id }}/">{{ row.cours }}</a>
+                                    </td>
+                                    {% for p in row.cells_passees %}
+                                        <td>
+                                            {% if p %}
+                                                <a href="/presences/{{ p.id }}/">Détail</a>
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        {% endif %}
     {% else %}
         <p>Aucune présence enregistrée pour le moment.</p>
     {% endif %}

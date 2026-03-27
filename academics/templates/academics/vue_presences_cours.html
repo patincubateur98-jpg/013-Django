@@ -5,6 +5,7 @@
     <title>Vue des présences par cours</title>
 </head>
 <body>
+    {% load academics_extras %}
     {% include 'academics/_top_nav.html' %}
     <h1>Vue des présences par cours</h1>
 
@@ -25,7 +26,7 @@
                 {% for s in synthese_globale %}
                     <tr>
                         <td>{{ s.classe_label }}</td>
-                        <td>{{ s.cours_code }}</td>
+                        <td>{{ s.cours_code|code_cours }}</td>
                         <td style="color: green;">{{ s.P }}</td>
                         <td style="color: red;">{{ s.A }}</td>
                         <td style="color: orange;">{{ s.AE }}</td>
@@ -81,7 +82,7 @@
         <select name="cours_id" required>
             <option value="">-- Choisir --</option>
             {% for c in cours_liste %}
-                <option value="{{ c.id }}" {% if cours and cours.id == c.id %}selected{% endif %}>{{ c.code }}</option>
+                <option value="{{ c.id }}" {% if cours and cours.id == c.id %}selected{% endif %}>{{ c.code|code_cours }}</option>
             {% endfor %}
         </select>
 
@@ -89,7 +90,7 @@
     </form>
 
     {% if classe and cours %}
-        <h2>{{ classe }} — Cours {{ cours.code }}</h2>
+        <h2>{{ classe }} — Cours {{ cours.code|code_cours }}</h2>
         <p>Colonnes affichées : {{ nombre_colonnes }} (001=5, 101=9, 201=9)</p>
         {% if resume_selection %}
             <p>

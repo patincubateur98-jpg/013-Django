@@ -341,8 +341,48 @@ def detail_cours(request, cours_id):
 
 @login_required
 def liste_presences(request):
-	presences = Presence.objects.select_related('classe', 'cours').order_by('-date', 'classe__numero', 'cours__code')
-	return render(request, 'academics/liste_presences.html', _ctx('presences', {'presences': presences}))
+	presences = list(
+		Presence.objects.select_related('classe', 'cours').order_by('date', 'classe__numero', 'cours__code')
+	)
+
+	toutes_dates = sorted({p.date for p in presences})
+	aujourdhui = timezone.localdate()
+	dates_courantes = [d for d in toutes_dates if d >= aujourdhui]
+	dates_passees = [d for d in toutes_dates if d < aujourdhui]
+
+	# Une ligne par couple (classe, cours) et un lien détail par date.
+	rows_map = {}
+	for p in presences:
+		key = (p.classe_id, p.cours_id)
+		if key not in rows_map:
+			rows_map[key] = {
+				'classe': p.classe,
+				'cours': p.cours,
+				'cells': {},
+			}
+		rows_map[key]['cells'][p.date] = p
+
+	rows = sorted(
+		rows_map.values(),
+		key=lambda r: (r['classe'].numero, (r['classe'].nom or '').lower(), str(r['cours'])),
+	)
+
+	for row in rows:
+		row['cells_courantes'] = [row['cells'].get(d) for d in dates_courantes]
+		row['cells_passees'] = [row['cells'].get(d) for d in dates_passees]
+
+	return render(
+		request,
+		'academics/liste_presences.html',
+		_ctx(
+			'presences',
+			{
+				'rows': rows,
+				'dates_courantes': dates_courantes,
+				'dates_passees': dates_passees,
+			},
+		),
+	)
 
 
 @login_required
@@ -415,7 +455,7 @@ def calendriers_classes(request):
 
 			liens = [
 				{
-					'label': 'PCNC (synthèse jour)' if libelle == 'PCNC' else libelle,
+					'label': 'Synthèse jour' if libelle == 'PCNC' else libelle,
 					'presence_id': presence.id,
 				}
 				for libelle, presence in sorted(liens_map.items(), key=lambda item: item[0])
