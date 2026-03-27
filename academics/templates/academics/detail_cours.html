@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Détail cours</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Détail du cours {{ cours.code }}</h1>
+
+    <p><strong>Code :</strong> {{ cours.code }}</p>
+    <p><strong>Nom :</strong> {{ cours.nom|default:"-" }}</p>
+
+    <h2>Étudiants inscrits</h2>
+    {% if etudiants %}
+        <ul>
+            {% for e in etudiants %}
+                <li>
+                    <a href="/etudiants/{{ e.id }}/">{{ e.nom }} {{ e.prenom|default:"" }}</a>
+                    — Classe: <a href="/classes/{{ e.classe.id }}/">{{ e.classe }}</a>
+                    {% if e.tuteur %}
+                        — Tuteur: <a href="/tuteurs/{{ e.tuteur.id }}/">{{ e.tuteur }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun étudiant dans ce cours.</p>
+    {% endif %}
+
+    <p><a href="/cours/">Retour à la liste des cours</a></p>
+    <p><a href="/presences/">Voir les présences</a></p>
+    <p><a href="/etudiants/">Voir la liste des étudiants</a></p>
+    <p><a href="/">Retour à l'accueil</a></p>
+</body>
+</html>

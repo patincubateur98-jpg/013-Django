@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Liste des tuteurs</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Liste des tuteurs</h1>
+
+    {% if tuteurs %}
+        <ul>
+            {% for t in tuteurs %}
+                <li>
+                    <a href="/tuteurs/{{ t.id }}/">{{ t.nom }} {{ t.prenom|default:"" }}</a>
+                    — Rôle: {{ t.role|default:"-" }}
+                    — Classe d'affectation:
+                    {% if t.classe_numero %}
+                        R{{ t.classe_numero }} {{ t.classe_nom|default:"" }}
+                    {% elif t.classe_affectee %}
+                        {{ t.classe_affectee }}
+                    {% else %}
+                        -
+                    {% endif %}
+                    — Cours: {{ t.cours_code|default:"-" }}
+                    — Étudiants suivis: {{ t.nombre_etudiants }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun tuteur enregistré.</p>
+    {% endif %}
+
+    <!-- <p><a href="/">Retour à l'accueil</a></p>
+    <p><a href="/etudiants/">Voir la liste des étudiants</a></p>
+    <p><a href="/classes/">Voir la liste des classes</a></p> -->
+</body>
+</html>

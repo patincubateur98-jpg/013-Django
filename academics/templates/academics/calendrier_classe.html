@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Calendrier de classe</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Calendrier de la Classe ({{ classe }})</h1>
+
+    {% if dates and lignes %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Élève</th>
+                    <th>Cumul absence</th>
+                    {% for d in dates %}
+                        <th>{{ d }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for ligne in lignes %}
+                    <tr>
+                        <td {% if ligne.couleur_nom %}bgcolor="{{ ligne.couleur_nom }}"{% endif %}>
+                            <a href="/etudiants/{{ ligne.etudiant.id }}/">{{ ligne.etudiant.nom }} {{ ligne.etudiant.prenom|default:'' }}</a>
+                        </td>
+                        <td>{{ ligne.total_a }}</td>
+                        {% for cell in ligne.cells %}
+                            <td>{{ cell.statut }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune date de présence planifiée pour cette classe.</p>
+    {% endif %}
+
+    <p><a href="/calendriers/classes/">Retour aux calendriers par classes</a></p>
+    <p><a href="/classes/{{ classe.id }}/">Retour au détail de la classe</a></p>
+    <p><a href="/">Retour à l'accueil</a></p>
+</body>
+</html>

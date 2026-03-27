@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Liste des classes</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Liste des classes</h1>
+
+    {% if lignes %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Nom de classe</th>
+                    <th>Nbre étudiants</th>
+                    <th>Nbre tuteurs</th>
+                    <th>Date début 001</th>
+                    <th>Date début 101</th>
+                    <th>Date début 201</th>
+                    <th>Calendrier</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ligne in lignes %}
+                    <tr>
+                        <td><a href="/classes/{{ ligne.classe.id }}/">{{ ligne.classe }}</a></td>
+                        <td>{{ ligne.nombre_etudiants }}</td>
+                        <td>{{ ligne.nombre_tuteurs }}</td>
+                        <td>{% if ligne.debut_001 %}{{ ligne.debut_001|date:"d/m/y" }}{% else %}-{% endif %}</td>
+                        <td>{% if ligne.debut_101 %}{{ ligne.debut_101|date:"d/m/y" }}{% else %}-{% endif %}</td>
+                        <td>{% if ligne.debut_201 %}{{ ligne.debut_201|date:"d/m/y" }}{% else %}-{% endif %}</td>
+                        <td><a href="/calendriers/classes/{{ ligne.classe.id }}/">Voir</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune classe enregistrée pour le moment.</p>
+    {% endif %}
+
+    <!-- <p><a href="/">Retour à l'accueil</a></p>
+    <p><a href="/calendriers/classes/">Voir les calendriers par classes</a></p>
+    <p><a href="/etudiants/">Voir la liste des étudiants</a></p> -->
+</body>
+</html>

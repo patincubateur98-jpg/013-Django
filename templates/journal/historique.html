@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Historique des modifications</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+
+    <h1>Historique des modifications</h1>
+
+    <form method="get" action="/journal/">
+        <label>Action :</label>
+        <select name="action">
+            <option value="" {% if not action %}selected{% endif %}>Toutes</option>
+            <option value="CREATE" {% if action == 'CREATE' %}selected{% endif %}>CREATE</option>
+            <option value="UPDATE" {% if action == 'UPDATE' %}selected{% endif %}>UPDATE</option>
+            <option value="DELETE" {% if action == 'DELETE' %}selected{% endif %}>DELETE</option>
+        </select>
+
+        <label>Table :</label>
+        <select name="table">
+            <option value="" {% if not table %}selected{% endif %}>Toutes</option>
+            {% for t in tables %}
+                <option value="{{ t }}" {% if table == t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Filtrer</button>
+        <a href="/journal/">Réinitialiser</a>
+    </form>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Date/heure</th>
+                <th>Action</th>
+                <th>Table</th>
+                <th>ID</th>
+                <th>Anciennes données</th>
+                <th>Nouvelles données</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in entries %}
+                <tr>
+                    <td>{{ e.date_heure }}</td>
+                    <td>{{ e.type_action }}</td>
+                    <td>{{ e.table_concernee }}</td>
+                    <td>{{ e.id_enregistrement }}</td>
+                    <td><pre>{{ e.ancien_donnees|default:"" }}</pre></td>
+                    <td><pre>{{ e.nouvel_donnees|default:"" }}</pre></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">Aucun événement dans le journal.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><a href="/">Retour à l'accueil</a></p>
+</body>
+</html>

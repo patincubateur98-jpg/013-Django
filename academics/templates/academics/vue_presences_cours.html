@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Vue des présences par cours</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Vue des présences par cours</h1>
+
+    <h2>Synthèse globale par classe et cours</h2>
+    {% if synthese_globale %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Classe</th>
+                    <th>Cours</th>
+                    <th>P</th>
+                    <th>A</th>
+                    <th>AE</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in synthese_globale %}
+                    <tr>
+                        <td>{{ s.classe_label }}</td>
+                        <td>{{ s.cours_code }}</td>
+                        <td style="color: green;">{{ s.P }}</td>
+                        <td style="color: red;">{{ s.A }}</td>
+                        <td style="color: orange;">{{ s.AE }}</td>
+                        <td>{{ s.TOTAL }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune donnée de présence disponible.</p>
+    {% endif %}
+
+    <h2>Synthèse par classe (tous cours confondus)</h2>
+    {% if synthese_par_classe %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Classe</th>
+                    <th>P</th>
+                    <th>A</th>
+                    <th>AE</th>
+                    <th>Total</th>
+                    <th>Taux absence (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in synthese_par_classe %}
+                    <tr>
+                        <td>{{ s.classe_label }}</td>
+                        <td style="color: green;">{{ s.P }}</td>
+                        <td style="color: red;">{{ s.A }}</td>
+                        <td style="color: orange;">{{ s.AE }}</td>
+                        <td>{{ s.TOTAL }}</td>
+                        <td {% if s.TAUX_ABSENCE >= 20 %}style="color: red;"{% elif s.TAUX_ABSENCE >= 10 %}style="color: orange;"{% else %}style="color: green;"{% endif %}>{{ s.TAUX_ABSENCE }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune donnée agrégée par classe.</p>
+    {% endif %}
+
+    <form method="get" action="/presences/vue/">
+        <label>Classe :</label>
+        <select name="classe_id" required>
+            <option value="">-- Choisir --</option>
+            {% for c in classes %}
+                <option value="{{ c.id }}" {% if classe and classe.id == c.id %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Cours :</label>
+        <select name="cours_id" required>
+            <option value="">-- Choisir --</option>
+            {% for c in cours_liste %}
+                <option value="{{ c.id }}" {% if cours and cours.id == c.id %}selected{% endif %}>{{ c.code }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Afficher</button>
+    </form>
+
+    {% if classe and cours %}
+        <h2>{{ classe }} — Cours {{ cours.code }}</h2>
+        <p>Colonnes affichées : {{ nombre_colonnes }} (001=5, 101=9, 201=9)</p>
+        {% if resume_selection %}
+            <p>
+                Totaux sélection: 
+                <span style="color: green;">P={{ resume_selection.P }}</span> |
+                <span style="color: red;">A={{ resume_selection.A }}</span> |
+                <span style="color: orange;">AE={{ resume_selection.AE }}</span> |
+                Total={{ resume_selection.TOTAL }}
+            </p>
+            <p>Couleur étudiant: rouge (A ≥ 3), orange (A = 2), vert (présences).</p>
+        {% endif %}
+
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Étudiant</th>
+                    {% for col in colonnes %}
+                        <th>
+                            {% if col.date %}
+                                {{ col.date }}
+                            {% else %}
+                                Colonne {{ col.index }}
+                            {% endif %}
+                        </th>
+                    {% endfor %}
+                    <th>P</th>
+                    <th>A</th>
+                    <th>AE</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ligne in lignes %}
+                    <tr>
+                        <td style="color: {{ ligne.couleur }};">
+                            {% if ligne.count_a >= 3 %}
+                                <strong>{{ ligne.etudiant.nom }} {{ ligne.etudiant.prenom|default:"" }}</strong>
+                            {% else %}
+                                {{ ligne.etudiant.nom }} {{ ligne.etudiant.prenom|default:"" }}
+                            {% endif %}
+                        </td>
+                        {% for statut in ligne.statuts %}
+                            <td {% if statut == 'P' %}style="color: green;"{% elif statut == 'A' %}style="color: red;"{% elif statut == 'AE' %}style="color: orange;"{% endif %}>{{ statut }}</td>
+                        {% endfor %}
+                        <td style="color: green;">{{ ligne.count_p }}</td>
+                        <td style="color: red;">{{ ligne.count_a }}</td>
+                        <td style="color: orange;">{{ ligne.count_ae }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="20">Aucun étudiant pour cette classe/cours.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <p><a href="/presences/saisie/">Ouvrir la saisie des présences</a></p>
+    <p><a href="/">Retour à l'accueil</a></p>
+</body>
+</html>

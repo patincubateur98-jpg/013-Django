@@ -1,0 +1,31 @@
+{% load accounts_extras %}
+
+<div style="position: sticky; top: 0; background: #fff; border-bottom: 1px solid #ddd; padding: 8px 10px; z-index: 1000;">
+    <a href="/" style="margin-right: 10px;">{% if active_nav == 'home' %}<strong><u>Accueil</u></strong>{% else %}Accueil{% endif %}</a>
+    <a href="/etudiants/" style="margin-right: 10px;">{% if active_nav == 'etudiants' %}<strong><u>Étudiants</u></strong>{% else %}Étudiants{% endif %}</a>
+    <a href="/classes/" style="margin-right: 10px;">{% if active_nav == 'classes' %}<strong><u>Classes</u></strong>{% else %}Classes{% endif %}</a>
+    <a href="/cours/" style="margin-right: 10px;">{% if active_nav == 'cours' %}<strong><u>Cours</u></strong>{% else %}Cours{% endif %}</a>
+    <a href="/tuteurs/" style="margin-right: 10px;">{% if active_nav == 'tuteurs' %}<strong><u>Tuteurs</u></strong>{% else %}Tuteurs{% endif %}</a>
+    <a href="/tuteurs/synthese/" style="margin-right: 10px;">{% if active_nav == 'tuteurs_synthese' %}<strong><u>Tuteurs Synthèse</u></strong>{% else %}Tuteurs Synthèse{% endif %}</a>
+    <a href="/presences/" style="margin-right: 10px;">{% if active_nav == 'presences' %}<strong><u>Présences</u></strong>{% else %}Présences{% endif %}</a>
+    {% if user|has_group:'ADMIN' or user|has_group:'COORDINATEUR' %}
+        <a href="/presences/saisie/" style="margin-right: 10px;">{% if active_nav == 'saisie' %}<strong><u>Saisie</u></strong>{% else %}Saisie{% endif %}</a>
+    {% endif %}
+    <a href="/presences/vue/" style="margin-right: 10px;">{% if active_nav == 'synthese' %}<strong><u>Synthèse</u></strong>{% else %}Synthèse{% endif %}</a>
+    {% if user|has_group:'ADMIN' or user|has_group:'COORDINATEUR' %}
+        <a href="/journal/" style="margin-right: 10px;">{% if active_nav == 'journal' %}<strong><u>Journal</u></strong>{% else %}Journal{% endif %}</a>
+    {% endif %}
+    <a href="/calendriers/classes/">{% if active_nav == 'calendriers' %}<strong><u>Calendriers</u></strong>{% else %}Calendriers{% endif %}</a>
+
+    <span style="float: right;">
+        {% if user.is_authenticated %}
+            <span style="margin-right: 8px;">Connecté: {{ user.username }}</span>
+            <form method="post" action="/accounts/logout/" style="display: inline; margin: 0;">
+                {% csrf_token %}
+                <button type="submit">Déconnexion</button>
+            </form>
+        {% else %}
+            <a href="/accounts/login/">Connexion</a>
+        {% endif %}
+    </span>
+</div>

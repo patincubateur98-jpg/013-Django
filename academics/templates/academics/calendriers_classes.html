@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Calendriers par classes</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Calendriers par classes</h1>
+
+    {% if classes and dates %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Classe</th>
+                    <th>Nombre de dates</th>
+                    <th>Dernière date</th>
+                    {% for d in dates %}
+                        <th>{{ d|date:"d/m/y" }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for ligne in lignes %}
+                    <tr>
+                        <td><a href="/calendriers/classes/{{ ligne.classe.id }}/">{{ ligne.classe }}</a></td>
+                        <td>{{ ligne.classe.nombre_dates }}</td>
+                        <td>{% if ligne.classe.derniere_date %}{{ ligne.classe.derniere_date|date:"d/m/y" }}{% else %}-{% endif %}</td>
+                        {% for cell in ligne.cells %}
+                            <td>
+                                {% if cell.liens %}
+                                    {% for lien in cell.liens %}
+                                        <a href="/presences/{{ lien.presence_id }}/">{{ lien.label }}</a>{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif classes %}
+        <p>Des classes existent, mais aucune date de présence n'est encore enregistrée.</p>
+    {% else %}
+        <p>Aucune classe disponible.</p>
+    {% endif %}
+
+    <p><a href="/">Retour à l'accueil</a></p>
+    <p><a href="/classes/">Voir la liste des classes</a></p>
+</body>
+</html>

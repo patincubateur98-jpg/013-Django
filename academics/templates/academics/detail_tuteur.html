@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Détail tuteur</title>
+</head>
+<body>
+    <h1>Détail tuteur</h1>
+
+    <p><strong>Nom :</strong> {{ tuteur.nom }}</p>
+    <p><strong>Prénom :</strong> {{ tuteur.prenom|default:"-" }}</p>
+    <p><strong>Email :</strong> {{ tuteur.email }}</p>
+    <p><strong>Téléphone :</strong> {{ tuteur.telephone|default:"-" }}</p>
+    <p><strong>Rôle :</strong> {{ tuteur.role|default:"-" }}</p>
+
+    <h2>Étudiants suivis</h2>
+    {% if etudiants %}
+        <ul>
+            {% for e in etudiants %}
+                <li>
+                    <a href="/etudiants/{{ e.id }}/">{{ e.nom }} {{ e.prenom|default:"" }}</a>
+                    — Classe: <a href="/classes/{{ e.classe.id }}/">{{ e.classe }}</a>
+                    — Cours: {{ e.cours }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun étudiant affecté à ce tuteur.</p>
+    {% endif %}
+
+    <p><a href="/tuteurs/">Retour à la liste des tuteurs</a></p>
+    <p><a href="/etudiants/">Retour à la liste des étudiants</a></p>
+    <p><a href="/">Retour à l'accueil</a></p>
+</body>
+</html>

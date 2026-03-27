@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Liste des cours</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Liste des cours</h1>
+
+    {% if cours %}
+        <ul>
+            {% for c in cours %}
+                <li>
+                    <a href="/cours/{{ c.id }}/">{{ c.code }}</a>
+                    {% if c.nom %}
+                        — {{ c.nom }}
+                    {% endif %}
+                    — Étudiants: {{ c.nombre_etudiants }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun cours enregistré.</p>
+    {% endif %}
+
+    <!-- <p><a href="/">Retour à l'accueil</a></p>
+    <p><a href="/etudiants/">Voir la liste des étudiants</a></p>
+    <p><a href="/classes/">Voir la liste des classes</a></p>
+    <p><a href="/tuteurs/">Voir la liste des tuteurs</a></p> -->
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Détail présence</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Détail présence</h1>
+
+    <p><strong>Date :</strong> {{ presence.date|date:"d/m/y" }}</p>
+    <p><strong>Classe :</strong> <a href="/classes/{{ presence.classe.id }}/">{{ presence.classe }}</a></p>
+    <p><strong>Cours :</strong> <a href="/cours/{{ presence.cours.id }}/">{{ presence.cours }}</a></p>
+
+    <h2>Synthèse</h2>
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Nbre étudiants</th>
+                <th>Nbre présents</th>
+                <th>Nbre absences excusées</th>
+                <th>Nbre absents</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ total_etudiants }}</td>
+                <td>{{ nombre_presents }}</td>
+                <td>{{ nombre_absents_excuses }}</td>
+                <td>{{ nombre_absents }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Liste des absences</h2>
+    {% if absences %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Étudiant</th>
+                    <th>Statut</th>
+                    <th>Commentaire</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pe in absences %}
+                    <tr>
+                        <td><a href="/etudiants/{{ pe.etudiant.id }}/">{{ pe.etudiant.nom }} {{ pe.etudiant.prenom|default:"" }}</a></td>
+                        <td>{{ pe.statut }}</td>
+                        <td>{{ pe.commentaire|default:"-" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune absence pour cette date/classe/cours.</p>
+    {% endif %}
+
+    <p><a href="/presences/">Retour à la liste des présences</a></p>
+    <p><a href="/">Retour à l'accueil</a></p>
+</body>
+</html>

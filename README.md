@@ -48,6 +48,10 @@ Ce dépôt sert à apprendre Django de façon progressive :
   - `python manage.py makemigrations`
 - Appliquer les migrations
   - `python manage.py migrate`
+- Prévisualiser un import depuis la base Flask (sans écrire)
+   - `python manage.py import_flask_students --source D:/chemin/pcnc.db --dry-run`
+- Importer les données étudiantes depuis la base Flask
+   - `python manage.py import_flask_students --source D:/chemin/pcnc.db`
 - Créer un superutilisateur
   - `python manage.py createsuperuser`
 - Ouvrir l’admin Django

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Détail étudiant</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Détail étudiant</h1>
+
+    <p><strong>Nom :</strong> {{ etudiant.nom }}</p>
+    <p><strong>Prénom :</strong> {{ etudiant.prenom|default:"-" }}</p>
+    <p><strong>Email :</strong> {{ etudiant.email }}</p>
+    <p><strong>Téléphone :</strong> {{ etudiant.telephone|default:"-" }}</p>
+    <p><strong>Classe :</strong> {{ etudiant.classe }}</p>
+    <p><strong>Cours :</strong> <a href="/cours/{{ etudiant.cours.id }}/">{{ etudiant.cours }}</a></p>
+    <p><strong>Présence :</strong> {{ etudiant.presence|default:"-" }}</p>
+    <p><strong>Tuteur :</strong>
+        {% if etudiant.tuteur %}
+            <a href="/tuteurs/{{ etudiant.tuteur.id }}/">{{ etudiant.tuteur }}</a>
+        {% else %}
+            -
+        {% endif %}
+    </p>
+
+    <h2>Synthèse des présences</h2>
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Total P</th>
+                <th>Total AE</th>
+                <th>Total A</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ synthese_presence.total_p }}</td>
+                <td>{{ synthese_presence.total_ae }}</td>
+                <td>{{ synthese_presence.total_a }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Historique des présences (date + statut)</h3>
+    {% if historique_presences %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    {% for item in historique_presences %}
+                        <th>{{ item.date }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Statut</td>
+                    {% for item in historique_presences %}
+                        <td>{{ item.statut }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucun historique disponible.</p>
+    {% endif %}
+
+    <p><a href="/classes/{{ etudiant.classe.id }}/">Retour à la classe</a></p>
+    <p><a href="/etudiants/">Retour à la liste des étudiants</a></p>
+    <p><a href="/cours/">Voir la liste des cours</a></p>
+    <p><a href="/tuteurs/">Voir la liste des tuteurs</a></p>
+    <p><a href="/">Retour à l'accueil</a></p>
+</body>
+</html>

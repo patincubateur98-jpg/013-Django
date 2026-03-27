@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Saisie des présences par cours</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Saisie des présences par cours</h1>
+
+    {% if saved %}
+        <p>Enregistrement effectué ✅</p>
+    {% endif %}
+    {% if message_reprise %}
+        <p>{{ message_reprise }}</p>
+    {% endif %}
+
+    <form method="get" action="/presences/saisie/">
+        <label>Classe :</label>
+        <select name="classe_id" required>
+            <option value="">-- Choisir --</option>
+            {% for c in classes %}
+                <option value="{{ c.id }}" {% if classe and classe.id == c.id %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Cours :</label>
+        <select name="cours_id" required>
+            <option value="">-- Choisir --</option>
+            {% for c in cours_liste %}
+                <option value="{{ c.id }}" {% if cours and cours.id == c.id %}selected{% endif %}>{{ c.code }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Charger</button>
+    </form>
+
+    <h2>Combinaisons disponibles (classe + cours)</h2>
+    {% if combinaisons %}
+        <ul>
+            {% for combo in combinaisons %}
+                <li>
+                    R{{ combo.classe__numero }} {{ combo.classe__nom|default:"" }}
+                    — {{ combo.cours__code }}
+                    — {{ combo.nombre_etudiants }} étudiant(s)
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune combinaison classe/cours avec étudiants.</p>
+    {% endif %}
+
+    {% if classe and cours %}
+        <h2>{{ classe }} — Cours {{ cours.code }}</h2>
+        <p>Colonnes attendues : {{ nombre_colonnes }} (P / A / AE)</p>
+        <p>Dates proposées automatiquement selon la séquence 001 → 101 → 201 (intervalle 2 semaines), modifiables en cas d'empêchement.</p>
+        <form method="post" action="/presences/saisie/">
+            {% csrf_token %}
+            <input type="hidden" name="classe_id" value="{{ classe.id }}">
+            <input type="hidden" name="cours_id" value="{{ cours.id }}">
+            <input type="hidden" name="action" value="reprendre_precedent">
+            <button type="submit">Reprendre du cours précédent</button>
+        </form>
+        {% if resume_saisie %}
+            <p>
+                Étudiants: {{ resume_saisie.nombre_etudiants }}
+                — Dates saisies: {{ resume_saisie.nombre_dates_saisies }}
+                — Cellules remplies: {{ resume_saisie.total_lignes_saisies }} / {{ resume_saisie.capacite_theorique }}
+            </p>
+        {% endif %}
+
+        <form method="post" action="/presences/saisie/">
+            {% csrf_token %}
+            <input type="hidden" name="classe_id" value="{{ classe.id }}">
+            <input type="hidden" name="cours_id" value="{{ cours.id }}">
+
+            <table border="1" cellpadding="6" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Étudiant</th>
+                        {% for col in colonnes %}
+                            <th>Colonne {{ col.index }}<br>
+                                <input type="date" name="date_{{ col.index }}" value="{{ col.date }}">
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ligne in lignes_saisie %}
+                        <tr>
+                            <td>{{ ligne.etudiant.nom }} {{ ligne.etudiant.prenom|default:"" }}</td>
+                            {% for cell in ligne.cells %}
+                                <td>
+                                    <select name="statut_{{ ligne.etudiant.id }}_{{ cell.index }}">
+                                        <option value="">-</option>
+                                        <option value="P" {% if cell.statut == 'P' %}selected{% endif %}>P</option>
+                                        <option value="A" {% if cell.statut == 'A' %}selected{% endif %}>A</option>
+                                        <option value="AE" {% if cell.statut == 'AE' %}selected{% endif %}>AE</option>
+                                    </select>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="20">Aucun étudiant pour cette classe/cours.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p><button type="submit">Enregistrer les présences</button></p>
+        </form>
+    {% endif %}
+
+    <!-- <p><a href="/presences/vue/">Ouvrir la vue des présences</a></p>
+    <p><a href="/">Retour à l'accueil</a></p> -->
+</body>
+</html>

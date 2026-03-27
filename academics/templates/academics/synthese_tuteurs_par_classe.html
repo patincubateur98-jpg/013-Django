@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Synthèse tuteurs par classe</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Synthèse tuteurs par classe</h1>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Classe</th>
+                <th>Tuteurs distincts</th>
+                <th>Étudiants</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in synthese %}
+                <tr>
+                    <td>R{{ s.classe__numero }} {{ s.classe__nom|default:"" }}</td>
+                    <td>{{ s.nombre_tuteurs }}</td>
+                    <td>{{ s.nombre_etudiants }}</td>
+                    <td><a href="/tuteurs/synthese/?classe_id={{ s.classe_id }}">Afficher cette classe</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Aucune donnée disponible.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if classe %}
+        <h2>Classe sélectionnée : {{ classe }}</h2>
+        <p><a href="/tuteurs/synthese/">Retour à toutes les classes</a></p>
+        <ul>
+            {% for t in tuteurs %}
+                <li>
+                    <a href="/tuteurs/{{ t.id }}/">{{ t.nom }} {{ t.prenom|default:"" }}</a>
+                    — Cours: {{ t.cours_code|default:"-" }}
+                    — Étudiants suivis: {{ t.nombre_etudiants }}
+                </li>
+            {% empty %}
+                <li>Aucun tuteur trouvé pour cette classe.</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

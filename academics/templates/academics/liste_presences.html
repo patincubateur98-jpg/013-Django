@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Liste des présences</title>
+</head>
+<body>
+    {% include 'academics/_top_nav.html' %}
+    <h1>Liste des présences</h1>
+
+    {% if presences %}
+        <ul>
+            {% for p in presences %}
+                <li>
+                    <a href="/presences/{{ p.id }}/">{{ p.date }}</a>
+                    — Classe: <a href="/classes/{{ p.classe.id }}/">{{ p.classe }}</a>
+                    — Cours: <a href="/cours/{{ p.cours.id }}/">{{ p.cours }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune présence enregistrée pour le moment.</p>
+    {% endif %}
+
+    <!-- <p><a href="/">Retour à l'accueil</a></p>
+    <p><a href="/presences/saisie/">Saisie des présences par cours</a></p>
+    <p><a href="/presences/vue/">Vue des présences par cours</a></p>
+    <p><a href="/classes/">Voir la liste des classes</a></p>
+    <p><a href="/cours/">Voir la liste des cours</a></p> -->
+</body>
+</html>
